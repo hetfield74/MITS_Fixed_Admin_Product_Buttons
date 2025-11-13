@@ -26,6 +26,14 @@ if (defined('MODULE_MITS_FIXED_ADMIN_PRODUCTBUTTONS_STATUS')
       <div class="main" id="fixedbuttons">
           <?php
           if ($_GET['action'] == 'new_product' || $_GET['action'] == 'new_product_preview') {
+              switch ($_SESSION['language_code']) {
+                  case 'de':
+                      defined('TEXT_HEADING_EDIT_MANUFACTURER') || define('TEXT_HEADING_EDIT_MANUFACTURER','Hersteller bearbeiten');
+                      break;
+                  default:
+                      defined('TEXT_HEADING_EDIT_MANUFACTURER') || define('TEXT_HEADING_EDIT_MANUFACTURER','Edit Manufacturer');
+                      break;
+              }
             ?>
             <input type="submit" class="button" value="<?php echo BUTTON_SAVE; ?>" <?php echo $confirm_save_entry; ?>>
             <?php
@@ -56,10 +64,17 @@ if (defined('MODULE_MITS_FIXED_ADMIN_PRODUCTBUTTONS_STATUS')
                   echo '<br /><a onclick="return confirmLink(\'' . CONTINUE_WITHOUT_SAVE . '\', \'\' ,this)" class="button" href="' . xtc_href_link(FILENAME_CONTENT_MANAGER, xtc_get_all_get_params(array('action', 'last_action', 'set', 'id')) . 'last_action=' . $_GET['action'] . '&action=new_products_content&set=product') . '">' . BUTTON_NEW_CONTENT . '</a>';
                   echo '<br /><a class="button" href="' . xtc_catalog_href_link('product_info.php', 'products_id=' . $_GET['pID']) . '" target="_blank">' . BUTTON_VIEW_PRODUCT . '</a>';
               }
+
+              if (isset($_GET['pID']) && $_GET['pID'] > 0 && isset($pInfo->manufacturers_id) && $pInfo->manufacturers_id > 0) {
+                $admin_edit_link = xtc_href_link(FILENAME_MANUFACTURERS, 'page=1&mID=' . $pInfo->manufacturers_id . '&action=edit');
+                echo '<br /><a class="button" href="' . $admin_edit_link . '">' . TEXT_HEADING_EDIT_MANUFACTURER . '</a>';
+              }
+
               echo '<br /><a class="button" href="' . ((isset($_GET['origin']) && $_GET['origin'] != '') ? xtc_href_link(basename($_GET['origin']), 'pID=' . (int)$_GET['pID'] . $catfunc->page_parameter) : xtc_href_link(
                   FILENAME_CATEGORIES,
                   'cPath=' . $cPath . $catfunc->page_parameter . ((isset($_GET['pID']) && $_GET['pID'] != '') ? '&pID=' . (int)$_GET['pID'] : '')
                 )) . '">' . BUTTON_CANCEL . '</a>';
+
               $fixed_button_type = "#new_product";
           }
 
